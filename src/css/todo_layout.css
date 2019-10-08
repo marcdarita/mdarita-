@@ -102,12 +102,13 @@ body {
 }
 .list_item_card_toolbar {
   position: absolute;
-  left: 85%;
+  left: 79%;
   width: 15%;
   top: 5%;
   height: 90%;
   display: grid;
   grid-template-columns: 33% 33% 33%;
+  column-gap: 15px;
 }
 .list_item_card_button {
   text-align: center;

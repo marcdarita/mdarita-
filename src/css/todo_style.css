@@ -133,7 +133,8 @@ body {
 .list_item_card_not_completed {
   color: red;
 }
-.list_item_card_toolbar {}
+.list_item_card_toolbar {
+}
 .list_item_card_button {
   background-color: var(--swatch-accent);
   color: var(--swatch-neutral);
@@ -142,7 +143,10 @@ body {
 }
 .list_item_card_button:hover {
   color: var(--swatch-complement);
-  cursor: default;
+  /* cursor: default; */
+  border-color: black;
+  border-width: 2px;
+  border-style: solid;
 }
 .disabled {
   background-color: lightgray;

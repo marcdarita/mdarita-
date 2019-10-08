@@ -29,6 +29,15 @@ class App extends Component {
     console.log("currentScreen: " + this.state.currentScreen);
   }
 
+  editItem = () => {
+    this.setState({currentScreen: AppScreen.ITEM_SCREEN});
+    //this.setState({currentList: null});
+  }
+
+  // openModal = () => {
+  //   this.setState({currentScreen: AppScreen.})
+  // }
+
   render() {
     switch(this.state.currentScreen) {
       case AppScreen.HOME_SCREEN:

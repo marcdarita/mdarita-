@@ -5,7 +5,7 @@ export class ItemScreen extends Component {
     render() {
         return (
             <div>
-                THIS HAS NOTHING SO FAR!
+                <strong>ABC</strong>THIS HAS NOTHING SO FAR!
             </div>
         )
     }

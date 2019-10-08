@@ -44,6 +44,15 @@ export class ListScreen extends Component {
             </div>
         )
     }
+
+    // handleChange(event) {
+    //     this.setState({value: event.target.value});
+    //   }
+    
+    // handleSubmit(event) {
+    //     alert('A name was submitted: ' + this.state.value);
+    //     event.preventDefault();
+    //   }
 }
 
 export default ListScreen
