@@ -5,6 +5,17 @@ import ListTrash from './ListTrash'
 import PropTypes from 'prop-types';
 
 export class ListScreen extends Component {
+
+    state = {
+        name: this.props.todoList.name
+    
+    }
+    changeName = (e) => {
+        this.setState({name: e.target.value});
+        this.props.todoList.name = this.state.name;
+    
+      }
+
     getListName() {
         if (this.props.todoList) {
             let name = this.props.todoList.name;
@@ -28,9 +39,12 @@ export class ListScreen extends Component {
                     <div id="list_details_name_container" className="text_toolbar">
                         <span id="list_name_prompt">Name:</span>
                         <input 
-                            value={this.getListName()} 
+                            value={this.state.name} 
                             type="text" 
-                            id="list_name_textfield" />
+                            id="list_name_textfield"
+                            onChange={this.changeName.bind(this)}
+                            />
+
                     </div>
                     <div id="list_details_owner_container" className="text_toolbar">
                         <span id="list_owner_prompt">Owner:</span>

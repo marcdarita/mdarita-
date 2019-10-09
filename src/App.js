@@ -34,6 +34,10 @@ class App extends Component {
     //this.setState({currentList: null});
   }
 
+  listLength = (todoListToLoad) => {
+      
+  }
+
   // openModal = () => {
   //   this.setState({currentScreen: AppScreen.})
   // }
