@@ -30,12 +30,9 @@ class App extends Component {
   }
 
   editItem = () => {
+    console.log("Is Editing")
     this.setState({currentScreen: AppScreen.ITEM_SCREEN});
     //this.setState({currentList: null});
-  }
-
-  listLength = (todoListToLoad) => {
-      
   }
 
   // openModal = () => {
@@ -51,7 +48,9 @@ class App extends Component {
       case AppScreen.LIST_SCREEN:            
         return <ListScreen
           goHome={this.goHome.bind(this)}
-          todoList={this.state.currentList} />;
+          todoList={this.state.currentList}
+          editItem = {this.editItem.bind(this)}
+          />;
       case AppScreen.ITEM_SCREEN:
         return <ItemScreen />;
       default:

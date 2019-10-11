@@ -2,18 +2,27 @@ import React, { Component } from 'react'
 import ListHeading from './ListHeading'
 import ListItemsTable from './ListItemsTable'
 import ListTrash from './ListTrash'
+import modalScreen from './modalScreen'
 import PropTypes from 'prop-types';
+import ListItemCard from './ListItemCard';
 
 export class ListScreen extends Component {
 
     state = {
-        name: this.props.todoList.name
-    
+        name: this.props.todoList.name,
+        owner: this.props.todoList.owner,
+        showModal: false
     }
+
     changeName = (e) => {
         this.setState({name: e.target.value});
+        e.preventDefault();
         this.props.todoList.name = this.state.name;
-    
+      }
+
+    changeOwner = (e) => {
+        this.props.todoList.owner = this.state.owner;
+        this.setState({owner: e.target.value});
       }
 
     getListName() {
@@ -34,7 +43,7 @@ export class ListScreen extends Component {
         return (
             <div id="todo_list">
                 <ListHeading goHome={this.props.goHome} />
-                <ListTrash />
+                <ListTrash toggleModal = {this.toggleModal.bind(this)}/>
                 <div id="list_details_container">
                     <div id="list_details_name_container" className="text_toolbar">
                         <span id="list_name_prompt">Name:</span>
@@ -51,12 +60,25 @@ export class ListScreen extends Component {
                         <input 
                             value={this.getListOwner()}
                             type="text" 
-                            id="list_owner_textfield" />
+                            id="list_owner_textfield"
+                            onChange={this.changeOwner.bind(this)} />
                     </div>
                 </div>
-                <ListItemsTable todoList={this.props.todoList} />
+                <ListItemsTable todoList={this.props.todoList} 
+                editItem = {this.props.editItem}
+                />
+                <modalScreen 
+                visible = {this.state.showModal}
+                toggleModal = {this.toggleModal.bind(this)}
+                />
+                
             </div>
         )
+    }
+
+    toggleModal = () => {
+        this.setState ({showModal: !(this.state.showModal)})
+        console.log(this.state.showModal);
     }
 
     // handleChange(event) {

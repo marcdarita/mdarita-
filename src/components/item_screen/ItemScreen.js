@@ -5,7 +5,10 @@ export class ItemScreen extends Component {
     render() {
         return (
             <div>
-                <strong>ABC</strong>THIS HAS NOTHING SO FAR!
+                <h1>Item</h1>
+                <br></br>
+                <p className = "item_prompt">Description</p>
+                <strong>ABC</strong> THIS HAS NOTHING SO FAR!
             </div>
         )
     }
