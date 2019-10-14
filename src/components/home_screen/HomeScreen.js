@@ -21,6 +21,11 @@ export class HomeScreen extends Component {
             </div>
         )
     }
+
+    newList = () => {
+        newList = this.props.todoLists.push()
+        this.props.loadList(newList)
+    }
 }
 
 HomeScreen.propTypes = {

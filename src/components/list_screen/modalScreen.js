@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
+import ListScreen from './ListScreen';
+
 
 export class modalScreen extends Component {
-    render() {
-        if (this.props.visible) {
+
+    modalShow = (show) => {
+        if (show) {
         return (
             <dialog className = "modal" open>
                  Delete List?
                 <br></br>
                 <strong>Are you sure you want to delete this list?</strong>
                 <br></br>
-                <button>Yes</button>
+                <button onClick = {this.props.removeItem}>Yes</button>
                 <button onClick = {this.props.toggleModal}>No</button>
                 <br></br>
                 The list will not be retrievable.
@@ -24,13 +27,20 @@ export class modalScreen extends Component {
                     <br></br>
                     <strong>Are you sure you want to delete this list?</strong>
                     <br></br>
-                    <button>Yes</button>
+                    <button onClick = {this.props.removeItem}>Yes</button>
                     <button onClick = {this.props.toggleModal}>No</button>
                     <br></br>
                     The list will not be retrievable.
                 </dialog>
             )
         }
+    }
+
+    render() {
+        return (
+            <ListScreen 
+            modalShow = {this.modalShow}/>
+        )
     }
 }
 

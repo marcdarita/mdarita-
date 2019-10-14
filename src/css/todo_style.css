@@ -175,9 +175,19 @@ body {
 }
 .item_input {
 font-size: 16pt;
+width: 90%;
 }
 .item_button {
 font-size: 16pt;
+}
+
+.item_button:hover {
+  border-width: 1px;
+  border-color: black;
+}
+
+.item_screen {
+  background-color: #e6e6e6;
 }
 
 /* FOR A MODAL DIALOG */

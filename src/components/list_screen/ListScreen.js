@@ -5,6 +5,7 @@ import ListTrash from './ListTrash'
 import modalScreen from './modalScreen'
 import PropTypes from 'prop-types';
 import ListItemCard from './ListItemCard';
+import ItemScreen from '../item_screen/ItemScreen'
 
 export class ListScreen extends Component {
 
@@ -16,18 +17,27 @@ export class ListScreen extends Component {
 
     changeName = (e) => {
         this.setState({name: e.target.value});
-        e.preventDefault();
-        this.props.todoList.name = this.state.name;
       }
 
+    updateName = () => {
+        if (this.state.name === "") {
+            this.props.todoList.name = "N/A"
+        }
+        else {
+            this.props.todoList.name = this.state.name;
+        }
+    }
+
     changeOwner = (e) => {
-        this.props.todoList.owner = this.state.owner;
         this.setState({owner: e.target.value});
       }
 
+    updateOwner = () => {
+        this.props.todoList.owner = this.state.owner;
+    }
+
     getListName() {
         if (this.props.todoList) {
-            let name = this.props.todoList.name;
             return this.props.todoList.name;
         }
         else
@@ -35,7 +45,6 @@ export class ListScreen extends Component {
     }
     getListOwner() {
         if (this.props.todoList) {
-            let owner = this.props.todoList.owner;
             return this.props.todoList.owner;
         }
     }
@@ -43,7 +52,7 @@ export class ListScreen extends Component {
         return (
             <div id="todo_list">
                 <ListHeading goHome={this.props.goHome} />
-                <ListTrash toggleModal = {this.toggleModal.bind(this)}/>
+                <ListTrash toggleModal = {this.toggleModal}/>
                 <div id="list_details_container">
                     <div id="list_details_name_container" className="text_toolbar">
                         <span id="list_name_prompt">Name:</span>
@@ -52,24 +61,27 @@ export class ListScreen extends Component {
                             type="text" 
                             id="list_name_textfield"
                             onChange={this.changeName.bind(this)}
+                            onKeyUp = {this.updateName}
                             />
 
                     </div>
                     <div id="list_details_owner_container" className="text_toolbar">
                         <span id="list_owner_prompt">Owner:</span>
                         <input 
-                            value={this.getListOwner()}
+                            value={this.state.owner}
                             type="text" 
                             id="list_owner_textfield"
-                            onChange={this.changeOwner.bind(this)} />
+                            onChange={this.changeOwner.bind(this)}
+                            onKeyUp = {this.updateOwner} />
                     </div>
                 </div>
                 <ListItemsTable todoList={this.props.todoList} 
                 editItem = {this.props.editItem}
+                //goHome = {this.props.goHome}
                 />
                 <modalScreen 
-                visible = {this.state.showModal}
-                toggleModal = {this.toggleModal.bind(this)}
+                showModal = {this.state.showModal}
+                //toggleModal = {this.toggleModal.bind(this)}
                 />
                 
             </div>
@@ -79,6 +91,11 @@ export class ListScreen extends Component {
     toggleModal = () => {
         this.setState ({showModal: !(this.state.showModal)})
         console.log(this.state.showModal);
+        this.props.modalShow(this.state.showModal)
+    }
+
+    removeList = () => {
+        this.pop();
     }
 
     // handleChange(event) {

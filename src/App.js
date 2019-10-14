@@ -29,6 +29,10 @@ class App extends Component {
     console.log("currentScreen: " + this.state.currentScreen);
   }
 
+  // newList = () => {
+
+  // }
+
   editItem = () => {
     console.log("Is Editing")
     this.setState({currentScreen: AppScreen.ITEM_SCREEN});
@@ -50,13 +54,50 @@ class App extends Component {
           goHome={this.goHome.bind(this)}
           todoList={this.state.currentList}
           editItem = {this.editItem.bind(this)}
+          modalShow = {this.modalShow}
           />;
       case AppScreen.ITEM_SCREEN:
-        return <ItemScreen />;
+        return <ItemScreen
+        loadList = {this.loadList.bind(this)}
+        todoList = {this.state.currentList}
+        />
       default:
         return <div>ERROR</div>;
     }
   }
+
+  modalShow = (show) => {
+    if (show) {
+      console.log("Showing modal")
+    return (
+        <modal className = "modal" open>
+             Delete List?
+            <br></br>
+            <strong>Are you sure you want to delete this list?</strong>
+            <br></br>
+            <button onClick = {this.props.removeItem}>Yes</button>
+            <button onClick = {this.props.toggleModal}>No</button>
+            <br></br>
+            The list will not be retrievable.
+        </modal>
+    )
+}
+    else {
+      console.log("Hiding modal")
+        return (
+            <dialog className = "modal">
+                 Delete List?
+                <br></br>
+                <strong>Are you sure you want to delete this list?</strong>
+                <br></br>
+                <button onClick = {this.props.removeItem}>Yes</button>
+                <button onClick = {this.props.toggleModal}>No</button>
+                <br></br>
+                The list will not be retrievable.
+            </dialog>
+        )
+    }
+}
 }
 
 export default App;

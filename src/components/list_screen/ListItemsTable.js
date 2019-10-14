@@ -21,6 +21,7 @@ export class ListItemsTable extends Component {
                             moveItemDown = {this.moveItemDown}
                             removeItem = {this.removeItem}
                             editItem = {this.props.editItem.bind(this)}
+                            //goHome = {this.props.goHome.bind(this)}
                             />
                     ))
                 }
@@ -71,10 +72,6 @@ export class ListItemsTable extends Component {
         else 
             {this.setState(this.props.todoList.items.splice(item.key, 1))}
     }
-
-    // editItem = () => {
-    //     console.log("Is Editing 1234");
-    // }
 }
 
 export default ListItemsTable
