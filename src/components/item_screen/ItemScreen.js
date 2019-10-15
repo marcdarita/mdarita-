@@ -5,10 +5,11 @@ import { thisExpression } from '@babel/types';
 export class ItemScreen extends Component {
 
     state = {
-        new_due_date: "",
+        key: this.props.itemBeingEdited.key,
+        new_description: "",
         new_assigned_to: "",
         new_due_date: "",
-        new_completed: false
+        new_completed: false,
     }
 
     onChange = (e) => {
@@ -16,38 +17,73 @@ export class ItemScreen extends Component {
     }
 
     render() {
+        let finalSubmit = this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? this.addNewItem : this.submitItemChanges;
+
         return (
             <div className = "item_screen">
                 <h1>Item</h1>
                 <br></br>
                 <span className = "item_prompt">Description: </span>
-                <input type= "input" className = "item_input" name="new_description" onChange = {this.onChange}></input>
+                <input type= "input" className = "item_input" name="new_description" onChange = {this.onChange}
+                defaultValue = {this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? "" : this.props.itemBeingEdited.description}></input>
                 <br></br>
                 <br></br>
                 <span className = "item_prompt">Assigned To: </span>
-                <input type= "input" className = "item_input" name="new_assigned_to" onChange = {this.onChange}></input>
+                <input type= "input" className = "item_input" name="new_assigned_to" onChange = {this.onChange}
+                defaultValue = {this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? "" : this.props.itemBeingEdited.assigned_to}></input>
                 <br></br>
                 <br></br>
                 <span className = "item_prompt">Due Date: </span>
-                <input type= "date" className = "item_input" name="new_due_date" onChange = {this.onChange}></input>
+                <input type= "date" className = "item_input" name="new_due_date" onChange = {this.onChange}
+                defaultValue = {this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? "" : this.props.itemBeingEdited.due_date}></input>
                 <br></br>
                 <br></br>
                 <span className = "item_prompt">Completed: </span>
-                <input type= "checkbox" className = "item_input" name="new_completed" onChange = {this.onChange}></input>
+                <input type= "checkbox" className = "item_input" name="new_completed" onChange = {this.onChange}
+                defaultValue = {this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? "" : this.props.itemBeingEdited.completed}></input>
                 <br></br>
                 <br></br>
-                <button className = "item_button">
-                
+                <button className = "item_button"
+                onClick = {() => finalSubmit(this)}>
+
                     Submit</button>
                 <button className = "item_button" onClick = {this.props.loadList.bind(this, this.props.todoList)}>Cancel</button>
             </div>
         )
     }
 
-    // submitChanges = () => {
-        //onClick = {this.props.submitItemChanges.bind(this.state.new_description.value, this.state.new_assigned_to.value, this.state.new_due_date.value, this.state.new_completed.value)}
-    //  new_description.value, new_assigned_to.value, new_due_date.value, new_completed.value
-    // }
+    addNewItem = () => {
+        this.props.submitNewItem(this.state.new_description, this.state.new_assigned_to, this.state.new_due_date, this.state.new_completed);
+    }
+
+    submitItemChanges = (itemBeingEdited) => {
+        var desc;
+        var asto;
+        var dd;
+        var comp;
+
+        if (this.state.new_description != "") 
+            {desc = this.state.new_description;}
+        else
+            {desc = itemBeingEdited.descrption;}
+
+        if (this.state.new_assigned_to != "") 
+            {asto = this.state.new_assigned_to;}
+         else
+            {asto = itemBeingEdited.assigned_to;}
+
+        if (this.state.new_due_date != "") 
+            {dd = this.state.new_due_date;}
+         else
+            {dd = itemBeingEdited.due_date;}
+
+        if (this.state.new_completed != "") 
+            {comp = this.state.completed;}
+        else
+            {comp = itemBeingEdited.descrption;}
+
+        this.props.submitChanges(this.state.key, desc, asto, dd, comp);
+    }
 }
 
 ItemScreen.propTypes = {

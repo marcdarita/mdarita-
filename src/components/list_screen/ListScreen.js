@@ -52,7 +52,12 @@ export class ListScreen extends Component {
         return (
             <div id="todo_list">
                 <ListHeading goHome={this.props.goHome} />
-                <ListTrash toggleModal = {this.toggleModal}/>
+                <ListTrash 
+                    showModal = {this.props.showModal}
+                    hideModal = {this.props.hideModal}
+                    modalOn = {this.props.modalOn}
+                
+                />
                 <div id="list_details_container">
                     <div id="list_details_name_container" className="text_toolbar">
                         <span id="list_name_prompt">Name:</span>
@@ -77,6 +82,10 @@ export class ListScreen extends Component {
                 </div>
                 <ListItemsTable todoList={this.props.todoList} 
                 editItem = {this.props.editItem}
+                addItem = {this.props.addItem}
+                sortTask = {this.props.sortTask}
+                sortDueDate = {this.props.sortDueDate}
+                sortCompleted = {this.props.sortCompleted}
                 //goHome = {this.props.goHome}
                 />
                 <modalScreen 
@@ -97,6 +106,20 @@ export class ListScreen extends Component {
     removeList = () => {
         this.pop();
     }
+
+    // sortTask = () => {
+    //     if (this.state.currentSortCriteria === ItemSortCriteria.SORT_BY_TASJ_INCREASING) {
+            
+    //         this.setState({currentItemSortCriteria: ItemSortCriteria.SORT_BY_TASK_DECREASING})
+    //         this.props.todoList.items.sort(function(a,b){
+    //             var A = a.description.toUpperCase();
+    //             var B = b.description.toUpperCae();
+    //                 if (A < B) return -1;
+    //                 if (A > B) return 1;
+    //                 return 0;
+    //         });
+    //     }
+    // }
 
     // handleChange(event) {
     //     this.setState({value: event.target.value});
