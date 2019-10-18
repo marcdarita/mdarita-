@@ -39,7 +39,7 @@ export class ItemScreen extends Component {
                 <br></br>
                 <br></br>
                 <span className = "item_prompt">Completed: </span>
-                <input type= "checkbox" className = "item_input" name="new_completed" onChange = {this.onChange}
+                <input type= "checkbox" value = " " className = "item_input" name="new_completed" onChange = {this.onChange}
                 defaultValue = {this.props.CURRENTSCREEN == "ADD_ITEM_SCREEN" ? "" : this.props.itemBeingEdited.completed}></input>
                 <br></br>
                 <br></br>
@@ -65,22 +65,22 @@ export class ItemScreen extends Component {
         if (this.state.new_description != "") 
             {desc = this.state.new_description;}
         else
-            {desc = itemBeingEdited.descrption;}
+            {desc = this.props.itemBeingEdited.description;}
 
         if (this.state.new_assigned_to != "") 
             {asto = this.state.new_assigned_to;}
          else
-            {asto = itemBeingEdited.assigned_to;}
+            {asto = this.props.itemBeingEdited.assigned_to;}
 
         if (this.state.new_due_date != "") 
             {dd = this.state.new_due_date;}
          else
-            {dd = itemBeingEdited.due_date;}
+            {dd = this.props.itemBeingEdited.due_date;}
 
         if (this.state.new_completed != "") 
-            {comp = this.state.completed;}
+            {comp = true;}
         else
-            {comp = itemBeingEdited.descrption;}
+            {comp = false;}
 
         this.props.submitChanges(this.state.key, desc, asto, dd, comp);
     }

@@ -3,7 +3,16 @@ import testTodoListData from './TestTodoListData.json'
 import HomeScreen from './components/home_screen/HomeScreen'
 import ItemScreen from './components/item_screen/ItemScreen'
 import ListScreen from './components/list_screen/ListScreen'
-import addItemScreen from './components/addItem_screen/addItemScreen'
+import jsTPS from './components/jTPS/jsTPS'
+import Transaction_NameChange from './components/jTPS/Transaction_NameChange.js';
+import Transaction_OwnerChange from './components/jTPS/Transaction_OwnerChange.js';
+import Transaction_MoveItem from './components/jTPS/Transaction_MoveItem.js';
+import Transaction_RemoveItem from './components/jTPS/Transaction_RemoveItem';
+import { isParenthesizedExpression } from '@babel/types';
+import Transaction_EditItem from './components/jTPS/Transaction_EditItem.js';
+import Transaction_DueDateOrderChange from './components/jTPS/Transaction_DueDateOrderChange.js';
+import Transaction_TaskOrderChange from './components/jTPS/Transaction_TaskOrderChange.js'
+import Transaction_CompletedOrderChange from './components/jTPS/Transaction_TaskOrderChange.js'
 
 const AppScreen = {
   HOME_SCREEN: "HOME_SCREEN",
@@ -20,16 +29,20 @@ const ItemSortCriteria = {
   SORT_BY_STATUS_INCREASING: "sort_by_status_increasing",
   SORT_BY_STATUS_DECREASING: "sort_by_status_decreasing"
 }
+
 class App extends Component {
   state = {
     currentScreen: AppScreen.HOME_SCREEN,
     todoLists: testTodoListData.todoLists,
     currentList: null,
     itemBeingEdited: null,
-    modalOn: false
+    TPS: new jsTPS(),
+    currentItemSortCriteria: null
   }
 
   render() {
+
+    document.body.addEventListener('keydown', this.onKeyPressed);
     switch(this.state.currentScreen) {
       case AppScreen.HOME_SCREEN:
         return <HomeScreen 
@@ -39,15 +52,21 @@ class App extends Component {
         return <ListScreen
           goHome={this.goHome.bind(this)}
           todoList={this.state.currentList}
+          todoLists = {this.state.todoLists}
           editItem = {this.editItem.bind(this)}
           addItem = {this.addItem.bind(this)}
-          modalShow = {this.modalShow}
-          sortTask = {this.sortTask}
-          sortDueDate = {this.sortDueDate}
-          sortCompleted = {this.sortCompleted}
-          showModal = {this.showModal} // ListTrash
-          hideModal = {this.hideModal} // List Trash
-          modalOn = {this.state.modalOn} // List Trash
+
+          sortTask = {this.sortTask} // Sort
+          sortDueDate = {this.sortDueDate} // Sort
+          sortCompleted = {this.sortCompleted} // Sort
+
+          changeName = {this.changeName}
+          changeOwner = {this.changeOwner}
+
+          moveItemUp = {this.moveItemUp} // Item Toolbar
+          moveItemDown = {this.moveItemDown} // Item Toolbar
+          removeItem = {this.removeItem} // Item Toolbar
+
           />;
       case AppScreen.ITEM_SCREEN:
         return <ItemScreen
@@ -83,6 +102,20 @@ class App extends Component {
     console.log("currentScreen: " + this.state.currentScreen);
   }
 
+  // List Functions --------------------------------------------------------------------------------------------
+
+  changeName = (name) => {
+    console.log("Changing Name");
+    var newName = new Transaction_NameChange(this.state.currentList, name);
+    this.state.TPS.addTransaction(newName);
+  }
+
+  changeOwner = (owner) => {
+    console.log("Changing Owner:" + owner);
+    var newOwner = new Transaction_OwnerChange(this.state.currentList, owner);
+    this.state.TPS.addTransaction(newOwner);
+  }
+
   editItem = (item) => {
     console.log("Is Editing")
     this.setState({currentScreen: AppScreen.ITEM_SCREEN});
@@ -90,8 +123,8 @@ class App extends Component {
   }
 
   submitChanges = (newKey, newDesc, newAsto, newDd, newComp) => {
-    // var item = new ListItemEdit_Transaction(this.state.currentList, key, desc, asto, dd, comp);
-    // this.state.tos.addTransaction(item);
+    var item = new Transaction_EditItem(this.state.currentList, newKey, newDesc, newAsto, newDd, newComp);
+    this.state.TPS.addTransaction(item);
 
     var item = {
         "key": newKey,
@@ -112,7 +145,7 @@ class App extends Component {
 
   submitNewItem = (newDesc, newAsto, newDd, newComp) => {
 
-    var item = {
+    var newItem = {
       "key": this.state.currentList.items.length,
       "description": newDesc,
       "assigned_to": newAsto,
@@ -120,7 +153,7 @@ class App extends Component {
       "completed": newComp
     };
 
-    this.state.currentList.items.push(item);
+    this.state.currentList.items.push(newItem);
     this.loadList(this.state.currentList);
   }
 
@@ -134,20 +167,87 @@ class App extends Component {
     })
   }
 
-  // MODAL -----------------------------------------------------------------------------------------------------
-  showModal = () => {
-    let modal = document.getElementById("modal_yes_no_dialog");
-    console.log("Showing modal")
-    if (!this.state.modalOn)
-      {this.setState({modalOn: true});}
+  // ITEM TOOLBAR CONTROLS -------------------------------------------------------------------------------------
+
+  moveItemUp = (item, event) => {
+    event.stopPropagation();
+    if (item.key == 0)
+        {return false;}
+    else {
+        var temp = this.state.currentList.items[item.key];
+        var temp2 = this.state.currentList.items[item.key - 1];
+        this.state.currentList.items[item.key] = this.state.currentList.items[item.key - 1];
+        this.state.currentList.items[item.key - 1] = temp;
+        item.key = item.key - 1;
+        temp2.key = temp2.key + 1;
+
+        let move = new Transaction_MoveItem(this.state.currentList, temp, temp2, temp.key, temp2.key);
+        this.state.TPS.addTransaction(move);
+
+        this.setState({currentList: this.state.currentList});
+    }
+}
+
+  moveItemDown = (item, event) => {
+    event.stopPropagation();
+    if (item.key >= this.state.currentList.items.length - 1)
+        {return false;}
+    else {
+        var temp = this.state.currentList.items[item.key];
+        var temp2 = this.state.currentList.items[item.key + 1];
+
+        
+        
+        this.state.currentList.items[item.key] = this.state.currentList.items[item.key+1];
+        this.state.currentList.items[item.key + 1] = temp;
+        
+        item.key +=1;
+        temp2.key = temp2.key - 1;
+
+        let move = new Transaction_MoveItem(this.state.currentList, temp, temp2, temp.key, temp2.key);
+        this.state.TPS.addTransaction(move);
+
+        this.setState({currentList: this.state.currentList});
+    }
+}
+
+removeItem = (item, event) => {
+  event.stopPropagation();
+  let remove = new Transaction_RemoveItem(this.state.currentList, item.key);
+  this.state.TPS.addTransaction(remove);
+
+  this.setState({currentList: this.state.currentList});
+}
+
+  // UNDO/REDO -------------------------------------------------------------------------------------------------
+
+  redo = () => {
+    this.state.TPS.doTransaction();
+    console.log("REDO");
+    this.setState({currentList: this.state.currentList});
   }
 
-  hideModal = () => {
-    console.log("Hiding modal")
-    this.setState({modalOn: false});
+  undo = () => {
+    this.state.TPS.undoTransaction();
+    console.log("UNDO");
+    this.setState({currentList: this.state.currentList});
+  }
+
+  onKeyPressed = (e) => {
+    if (this.state.currentScreen == AppScreen.LIST_SCREEN) {
+      if (e.ctrlKey && e.key == "z")
+        {this.undo(this);}
+      else if (e.ctrlKey && e.key == "y") 
+        {this.redo(this);}
+      else 
+        {return;}
+    }
+    else 
+      {return;}
   }
 
 // SORTING ------------------------------------------------------------------------------------------------------
+
 compare = (item1, item2) => {
   if (this.state.currentItemSortCriteria == (ItemSortCriteria.SORT_BY_TASK_DECREASING)
     || this.state.currentItemSortCriteria == (ItemSortCriteria.SORT_BY_STATUS_DECREASING)
@@ -200,6 +300,8 @@ compare = (item1, item2) => {
 }
 
     sortDueDate = () => {
+      
+      // this.setState({currentList: this.state.currentList});
       let newList = this.state.currentList;
       if (this.state.currentItemSortCriteria == ItemSortCriteria.SORT_BY_DUE_DATE_INCREASING) {
         newList.items.sort(this.compare);
@@ -214,7 +316,11 @@ compare = (item1, item2) => {
         item.key = i++;
   
       });
+
+      let sort = new Transaction_DueDateOrderChange(this.state.currentList)
+      this.state.TPS.addTransaction(sort);
       this.setState({ currentList: newList });
+      //this.setState({currentList: this.state.currentList});
   
     }
   
@@ -233,6 +339,9 @@ compare = (item1, item2) => {
         item.key = i++;
   
       });
+
+      let sort = new Transaction_TaskOrderChange(newList)
+      this.state.TPS.addTransaction(sort);
       this.setState({ currentList: newList });
     }
   
@@ -251,6 +360,8 @@ compare = (item1, item2) => {
         item.key = i++;
   
       });
+      let sort = new Transaction_CompletedOrderChange(newList)
+      this.state.TPS.addTransaction(sort);
       this.setState({ currentList: newList });
     }
 }

@@ -195,7 +195,7 @@ font-size: 16pt;
 .modal { 
   position: fixed;
   top: 0;
-  left: 0;
+  left: -1000px;
   right: 0;
   bottom: 0;
   display: flex;
@@ -212,6 +212,7 @@ font-size: 16pt;
 .modal.is_visible {
   visibility: visible;
   opacity: 1;
+  left: 50px;
 }
 
 .modal_dialog {

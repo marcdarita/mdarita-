@@ -19,9 +19,9 @@ export class ListItemsTable extends Component {
                             key={todoItem.key}
                             listItem={todoItem} 
                             items = {this.props.todoList.items}
-                            moveItemUp = {this.moveItemUp}
-                            moveItemDown = {this.moveItemDown}
-                            removeItem = {this.removeItem}
+                            moveItemUp = {this.props.moveItemUp}
+                            moveItemDown = {this.props.moveItemDown}
+                            removeItem = {this.props.removeItem}
                             editItem = {this.props.editItem}
                             addItem = {this.props.addItem}
                             submitItemChanges = {this.submitItemChanges}
@@ -35,52 +35,6 @@ export class ListItemsTable extends Component {
         )
     }
 
-    moveItemUp = (item, event) => {
-        event.stopPropagation();
-        if (item.key == 0)
-            {return false;}
-        else {
-            var temp = this.props.todoList.items[item.key];
-            var temp2 = this.props.todoList.items[item.key - 1];
-            this.props.todoList.items[item.key] = this.props.todoList.items[item.key - 1];
-            this.props.todoList.items[item.key - 1] = temp;
-            item.key = item.key - 1;
-            temp2.key = temp2.key + 1;
-
-            this.setState(this.props.todoList.items);
-        }
-    }
-
-    moveItemDown = (item, event) => {
-        event.stopPropagation();
-        if (item.key >= this.props.todoList.items.length - 1)
-            {return false;}
-        else {
-            var temp = this.props.todoList.items[item.key];
-            var temp2 = this.props.todoList.items[item.key + 1];
-            this.props.todoList.items[item.key] = this.props.todoList.items[item.key+1];
-            this.props.todoList.items[item.key + 1] = temp;
-            
-            item.key = item.key + 1;
-            temp2.key = temp2.key - 1;
-
-            this.setState(this.props.todoList.items);
-        }
-    }
-
-    removeItem = (item, event) => {
-        event.stopPropagation();
-        if (item.key !== this.props.todoList.items.length-1) {
-            for (var i = item.key+1; i < this.props.todoList.items.length; i++) {
-                var e = this.props.todoList.items[i];
-                e.key = i-1;
-            }
-        }
-        if (this.props.todoList.items.length === 1)
-            {this.setState(this.props.todoList.items.pop());}
-        else 
-            {this.setState(this.props.todoList.items.splice(item.key, 1))}
-    }
     submitItemChanges = (desc, asto, dd, comp) => {
         this.listItem.description = desc;
         this.listItem.assigned_to = asto;
