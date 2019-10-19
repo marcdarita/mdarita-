@@ -10,7 +10,7 @@ import Transaction_MoveItem from './components/jTPS/Transaction_MoveItem.js';
 import Transaction_RemoveItem from './components/jTPS/Transaction_RemoveItem';
 import { isParenthesizedExpression } from '@babel/types';
 import Transaction_EditItem from './components/jTPS/Transaction_EditItem.js';
-import Transaction_DueDateOrderChange from './components/jTPS/Transaction_DueDateOrderChange.js';
+import Transaction_SortChange from './components/jTPS/Transaction_SortChange.js';
 import Transaction_TaskOrderChange from './components/jTPS/Transaction_TaskOrderChange.js'
 import Transaction_CompletedOrderChange from './components/jTPS/Transaction_TaskOrderChange.js'
 
@@ -300,16 +300,24 @@ compare = (item1, item2) => {
 }
 
     sortDueDate = () => {
+      let oldList = {
+        "key": this.state.currentList.key,
+        "name": this.state.currentList.name,
+        "owner": this.state.currentList.owner,
+        "items": [],
+      }
+      for (let i = 0; i < this.state.currentList.items.length; i++) {
+          oldList.items.push(this.state.currentList.items[i]);
+      }
       
-      // this.setState({currentList: this.state.currentList});
       let newList = this.state.currentList;
       if (this.state.currentItemSortCriteria == ItemSortCriteria.SORT_BY_DUE_DATE_INCREASING) {
-        newList.items.sort(this.compare);
         this.setState({ currentItemSortCriteria: ItemSortCriteria.SORT_BY_DUE_DATE_DECREASING });
-      }
-      else {
         newList.items.sort(this.compare);
+      }
+      else { 
         this.setState({ currentItemSortCriteria: ItemSortCriteria.SORT_BY_DUE_DATE_INCREASING });
+        newList.items.sort(this.compare);
       }
       var i = 0;
       newList.items.map(item => {
@@ -317,14 +325,27 @@ compare = (item1, item2) => {
   
       });
 
-      let sort = new Transaction_DueDateOrderChange(this.state.currentList)
+      console.log(oldList);
+      console.log(newList);
+
+      let sort = new Transaction_SortChange(this.state.currentList, newList, oldList);
       this.state.TPS.addTransaction(sort);
-      this.setState({ currentList: newList });
-      //this.setState({currentList: this.state.currentList});
-  
+      this.setState({ currentList: this.state.currentList });
+        
     }
   
     sortTask = () => {
+
+      let oldList = {
+        "key": this.state.currentList.key,
+        "name": this.state.currentList.name,
+        "owner": this.state.currentList.owner,
+        "items": [],
+      }
+      for (let i = 0; i < this.state.currentList.items.length; i++) {
+        oldList.items.push(this.state.currentList.items[i]);
+    }
+      
       let newList = this.state.currentList;
       if (this.state.currentItemSortCriteria == ItemSortCriteria.SORT_BY_TASK_INCREASING) {
         this.setState({ currentItemSortCriteria: ItemSortCriteria.SORT_BY_TASK_DECREASING });
@@ -340,12 +361,23 @@ compare = (item1, item2) => {
   
       });
 
-      let sort = new Transaction_TaskOrderChange(newList)
+      let sort = new Transaction_SortChange(this.state.currentList, newList, oldList)
       this.state.TPS.addTransaction(sort);
-      this.setState({ currentList: newList });
+      this.setState({ currentList: this.state.currentList });
     }
   
     sortCompleted = () => {
+
+      let oldList = {
+        "key": this.state.currentList.key,
+        "name": this.state.currentList.name,
+        "owner": this.state.currentList.owner,
+        "items": [],
+      }
+      for (let i = 0; i < this.state.currentList.items.length; i++) {
+        oldList.items.push(this.state.currentList.items[i]);
+    }
+
       let newList = this.state.currentList;
       if (this.state.currentItemSortCriteria == ItemSortCriteria.SORT_BY_STATUS_INCREASING) {
         this.setState({ currentItemSortCriteria: ItemSortCriteria.SORT_BY_STATUS_DECREASING });
@@ -360,9 +392,9 @@ compare = (item1, item2) => {
         item.key = i++;
   
       });
-      let sort = new Transaction_CompletedOrderChange(newList)
+      let sort = new Transaction_SortChange(this.state.currentList, newList, oldList)
       this.state.TPS.addTransaction(sort);
-      this.setState({ currentList: newList });
+      this.setState({ currentList: this.state.currentList });
     }
 }
 
